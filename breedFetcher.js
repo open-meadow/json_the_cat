@@ -1,30 +1,21 @@
 const request = require('request');
 
-const breedFetcher = (input) => {
+const fetchBreedDescription = (breedName, callback) => {
 
-  let query = input[2];
-
-  request(`https://api.thecatapi.com/v1/breeds/search?q=${query}`, (error,response, body) => { // this line requests information from a web page
-    // console.log(body);
-    // console.log(typeof body);
-
-    //console.log(error, response);
+  request(`https://api.thecatapi.com/v1/breeds/search?q=${breedName}`, (error,response, body) => { // this line requests information from a web page
 
     if (error) {
-      console.log("Error: ", error.message); // if there is an error
-      process.exit(); // exit the process
+      // console.log("Error: ", error.message); // if there is an error
+      callback(error, body); // exit the process
     }
 
     const data = JSON.parse(body);
-    // console.log(data);
-    // console.log(typeof data);
 
-    if (!data[0]) console.log("Cat breed not found"); // Edge case 1 - If data comes undefined, cat breed not found.
-    else console.log(data[0].description);
-
-
-
+    if (!data[0]) callback(error, "Cat breed not found"); // Edge case 1 - If data comes undefined, cat breed not found.
+    else callback(error, data[0].description);
   });
 };
 
-breedFetcher(process.argv);
+
+
+module.exports = { fetchBreedDescription };
